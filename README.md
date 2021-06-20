@@ -1,10 +1,12 @@
+![Factorio Game Logo](./assets/Factorio-logo.png)
+
 # quick-factorio-server
 
-Quickly deploy a factorio server to Azure with Terraform and Ansible.
+Quickly deploy a Factorio server to Azure with Terraform and Ansible.
 
 ## Factorio Server Features
 
-You can apply all server settings you want in the `./ansible/server-settings.json`. The Ansible script will generate a random generated map. Savegames are currently not supported.
+You can apply all server settings in the `./ansible/server-settings.json`. The Ansible script will generate a random generated map. Savegames are currently not supported.
 
 ## Prerequisites
 
@@ -18,13 +20,13 @@ You can apply all server settings you want in the `./ansible/server-settings.jso
 1. Initialize terraform
 
 ```shell
-$ tf init
+$ terraform init
 ```
 
 2. Apply the Terraform configuration
 
 ```shell
-$ tf apply
+$ terraform apply
 ```
 
 3. Copy the public IP returned from Terraform and append to `./ansible/hosts` file.
@@ -40,3 +42,7 @@ $ echo -e x.x.x.x >> ./ansible/hosts
 ```shell
 $ ansible-playbook ./ansible/configureFactorio.yml -i ./ansible/hosts
 ```
+
+### Disclaimer
+
+I'm not associated with Wube Software. This is just a hobby project which makes it easier to deploy a Factorio server.
