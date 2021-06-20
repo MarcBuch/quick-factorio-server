@@ -1,0 +1,82 @@
+---
+- name: Configure Factorio
+  hosts: app
+  become: true
+  
+  tasks:
+  - name: Create the factorio group
+    group:
+      name: factorio
+      state: present
+
+  - name: Create the factorio user
+    user:
+      name: factorio
+      group: factorio
+      create_home: false
+
+  - name: Update the mirrors
+    apt:
+      update_cache: yes
+      cache_valid_time: 86400
+      upgrade: yes
+  
+  - name: Install xz-utils
+    apt:
+      name: xz-utils
+
+  - name: Get the latest factorio image
+    become: false
+    get_url: url="https://factorio.com/get-download/stable/headless/linux64" dest="./factorio.tar.xz"
+
+  - name: Extract the factorio image
+    become: false
+    shell: tar -xvf factorio.tar.xz
+
+  - name: Copy factorio to /opt
+    copy:
+      remote_src: true
+      src: ./factorio
+      dest: /opt
+      owner: factorio
+      group: factorio
+
+  - name: Copy the server settings
+    copy:
+      src: ./server-settings.json
+      dest: /opt/factorio/data
+      owner: factorio
+      group: factorio
+
+  - name: Generate a random savegame
+    shell: /opt/factorio/bin/x64/factorio --create /opt/factorio/data/saves/initialSave.zip
+  
+  - name: Change permission to the factorio server
+    file:
+      path: /opt/factorio
+      owner: factorio
+      group: factorio
+      recurse: true
+
+  - name: Copy the service to systemd
+    copy:
+      src: ./factorio.service
+      dest: /etc/systemd/system/
+
+  - name: Start the factorio server
+    systemd:
+      daemon_reload: yes
+      name: factorio.service
+      state: started
+    
+  - name: Delete the unzipped factorio folder in home
+    become: false
+    file:
+      path: ./factorio
+      state: absent
+  
+  - name: Delete the zipped archive in home
+    become: false
+    file:
+      path: ./factorio.tar.xz
+      state: absent

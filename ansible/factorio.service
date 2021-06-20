@@ -1,0 +1,7 @@
+[Unit]
+Description=Factorio Headless Server
+
+[Service]
+Type=simple
+User=factorio
+ExecStart=/opt/factorio/bin/x64/factorio --start-server /opt/factorio/data/saves/initialSave.zip --server-settings /opt/factorio/data/server-settings.json
