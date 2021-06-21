@@ -68,6 +68,7 @@
       daemon_reload: yes
       name: factorio.service
       state: started
+      enabled: yes
     
   - name: Delete the unzipped factorio folder in home
     become: false
